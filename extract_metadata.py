@@ -3,15 +3,15 @@ import csv
 from datetime import datetime
 import calendar
 
-directory = r'/home/dale/Documents/Code/news_releases/data/1962-1967_2019-22_Box_36_File_268-274/'
-accession_id = '2019-22 Box 36 File 268-274'
-uid_part = '2019-22-36-'
+#directory = r'data/1962-1967_2019-22_Box_36_File_268-274/'
+#accession_id = '2019-22 Box 36 File 268-274'
+#uid_part = '2019-22-36-'
 
-# #directory = r'/home/dale/Documents/Code/news_releases/data/1974-2002_2012-42_Box_1-3_File_1-27/'
-# accession_id = '2012-42 Box 1-3 File 1-27'
-# uid_part = '2012-42-1-'
+directory = r'data/1974-2002_2012-42_Box_1-3_File_1-27/'
+accession_id = '2012-42 Box 1-3 File 1-27'
+uid_part = '2012-42-1-'
 
-# #directory = r'/home/dale/Documents/Code/news_releases/data/1968-1974_2019-3_Box_56-57_File_570-578/'
+# directory = r'/home/dale/Documents/Code/news_releases/data/1968-1974_2019-3_Box_56-57_File_570-578/'
 # accession_id = '2019-3 Box 56-57 File 570-578'
 # uid_part = '2019-3-570-'
 
@@ -47,10 +47,25 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 			else: 
 				decade = None
 
-			#if year:
+			if real_date:
+				if real_date <= datetime(year = 1968, month = 1, day = 31):
+					title = "News from the University of Saskatchewan"
+				elif real_date <= datetime(year = 1973, month = 7, day = 11):
+					title = "News from the University of Saskatchewan, Regina Campus"
+				elif real_date <= datetime(year = 1974, month = 6, day = 30):
+					title = "News Release - University of Saskatchewan, Regina Campus"
+				elif real_date <= datetime(year = 1985, month = 6, day = 30):
+					title = "News Release - University of Regina"
+				elif real_date <= datetime(year = 1988, month = 3, day = 3):
+					title = "Information"
+				elif real_date <= datetime(year = 1989, month = 3, day = 20):
+					title = "Info"
+				elif real_date <= datetime(year = 1993, month = 10, day = 15):
+					title = "News"
+				else:
+					title = "University of Regina: News Release"
 
-			#title
-				# < 1968-01-31 "News from the University of Saskatchewan"
+				# <1968-01-31 "News from the University of Saskatchewan"
 				# 1968-02-01 - 1973-07-11 - "News from the University of Saskatchewan, Regina Campus"
 				# 1973-07-12 - 1974-06-30 - "News Release - University of Saskatchewan, Regina Campus"
 				# 1974-07-01 - 1985-06-30 - "News Release - University of Regina"
@@ -59,6 +74,7 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 				# 1989-03-21 - 1993-10-15 - "News"
 				# > 1993-10-16 - "University of Regina: News Release"
 			
+			#real titles start in Oct. 1985
 
 			#authors
 				#< 1962-07-01 - "News Services Office"
@@ -82,6 +98,6 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 			new_name = r'/home/dale/Documents/Code/news_releases/data/txt/' + uid + '.txt'
 			#print(new_name)
 			#os.rename(old_name,new_name)
-			row = [uid,base,accession_id,date,year,month,day,decade]
+			row = [uid,base,accession_id,date,year,month,day,decade,title]
 			writer.writerow(row)
 csvFile.close()		
