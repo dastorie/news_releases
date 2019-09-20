@@ -9,23 +9,12 @@ base_dir = r'data/'
 input_dir = base_dir + 'txt/'
 output_dir = base_dir + 'cleaned/'
 
-# def find_breakline(file):
-# 	break_line = 0
-# 	text = file.readlines()
-# 	for idx,line in enumerate(text):
-# 		release_point = re.search('RELEASE',line)
-# 		if release_point:
-# 			if idx < 40:
-# 				break_line = idx
-# 	return(break_line)
-
-
 for filename in os.listdir(input_dir):
 
 	filepath = os.path.join(input_dir, filename)
 
 	base_file = os.path.splitext(filename)[0]
-	output_file = base_file + '_clean.txt'
+	output_file = base_file + '.txt'
 	output_path = os.path.join(output_dir, output_file)
 	#print(output_path)
 	
@@ -36,7 +25,7 @@ for filename in os.listdir(input_dir):
 	
 	text = file.readlines()	
 	for line in text: 	
-		more = re.search('^\.{3,4} +(MORE|more)',line)
+		more = re.search('^\.{3,4}.+(MORE|more)',line)
 		if more:
 			continue
 		line = re.sub('•|\*','',line)
