@@ -25,11 +25,12 @@ for filename in os.listdir(input_dir):
 	
 	text = file.readlines()	
 	for line in text: 	
-		more = re.search('^\.{3,4}.+(MORE|more)',line)
-		if more:
-			continue
+		if re.match('\.\.\.MORE',line):
+			line = ''
+		if re.match('UNIV\. OF SASK',line):
+			line = ''
 		line = re.sub('•|\*','',line)
-		line = re.sub('-30-|- 30 -','',line)
+		line = re.sub('-30-|- 30 -|— 30 —','',line)
 		line = re.sub('(-|¬)\s','',line)
 		line = re.sub('[^[:alnum:]\s.:,?!\'\";]','',line)
 		line = line.strip('\f')
@@ -39,33 +40,7 @@ for filename in os.listdir(input_dir):
 		if line == '\n':
 			continue
 		outfile.write(line)
-	outfile.close()
-
-	# 	#remove page endings?
-	# 	line = re.sub('-30-|- 30 -','',line)
-	# 	#remove hyphen breaks
-	# 	line = re.sub('(-|¬)\s','',line)
-	# 	#remove odd characters
-	# 	line = re.sub('[^[:alnum:]\s.:,?!\'\";]','',line)	
-	# 	#remove odd encoding
-	# 	
-
-	# 	# 	para = re.search('\.\n',line)
-	# 	# 	if para:	
-	# 	# 		line = line
-	# 	# 	else:
-	# 	# 		line = line.strip('\n')
-			
-	# 	# 	#intro = re.search('^(SASKATOON.+SASK.+|ADMINISTRATION BUILDING|EXT|UNIVERSITY NEWS|NEWS AND INFORMATION|PHONE.+|\d{1,3}|UNIV.+OF.+SASK.+|...MORE)',line)
-	# 	# 	# if intro:
-	# 	# 	# 	continue
-	# 	# 	# #strip blank lines
-	# 	# 	# if line == '':
-	# 	# 	# 	continue
-	# 	# 	#not_upper = re.search('[a-z]',line)
-	# 	outfile.write(line)			
-					
-	# outfile.close()	
+	outfile.close()	
 			
 
 

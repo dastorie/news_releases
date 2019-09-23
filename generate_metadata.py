@@ -4,33 +4,43 @@ from datetime import datetime
 import calendar
 from titlecase import titlecase
 
-directory = r'data/1962-1967_2019-22_Box_36_File_268-274/'
-accession_id = '2019-22 Box 36 File 268-274'
-uid_part = '-2019-22-36'
+#directory = r'data/1962-1967_2019-22_Box_36_File_268-274/'
+#accession_id = '2019-22 Box 36 File 268-274'
+#uid_part = '-2019-22-36'
 
-# directory = r'data/1974-2002_2012-42_Box_1-3_File_1-27/'
-# accession_id = '2012-42 Box 1-3 File 1-27'
+#directory = r'data/1974-2002_2012-42_Box_1-3_File_1-27/'
+#accession_id = '2012-42 Box 1-3 File 1-27'
 # uid_part = '-2012-42-1'
 
-# directory = r'data/1968-1974_2019-3_Box_56-57_File_570-578/'
-# accession_id = '2019-3 Box 56-57 File 570-578'
+directory = r'data/1968-1974_2019-3_Box_56-57_File_570-578/'
+accession_id = '2019-3 Box 56-57 File 570-578'
 # uid_part = '-2019-3-570'
 
 with open('news_release_metadata.csv', 'a') as csvFile:
 	writer = csv.writer(csvFile)
-	header = ['pid','filename','accession_id','date','year','month','day','decade','label','title','author']
+	header = ['pid','accession_id','date','year','month','day','decade','label','title','author','fulltext']
 	#writer.writerow(header)
 	for filename in os.listdir(directory):
 		if filename.endswith(".pdf"):
 
 			base_file = os.path.splitext(filename)[0]
+
+			#open original text file to get title info
 			text_path = 'data/txt/' 
 			text_file = base_file + '.txt'
 			filepath = os.path.join(text_path + text_file)
 			file = open(filepath)	
 			text = file.read()
 
-			d = re.search("(\d{4}-\d{2}-\d{2})",filename)
+			#open clean text file to include in full_text field
+			clean_text_path = 'data/cleaned/'
+			clean_text_file = base_file + '.txt'
+			clean_filepath = os.path.join(clean_text_path + clean_text_file)
+			clean_file = open(clean_filepath)
+			clean_text = clean_file.read()
+
+			#get date
+			d = re.search(r"(\d{4}-\d{2}-\d{2})",filename)
 			if d:
 				date = d[0]
 				real_date = datetime.strptime(date, '%Y-%m-%d')	
@@ -67,8 +77,7 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 				# 1989-03-21 - 1993-10-15 - "News"
 				# > 1993-10-16 - "University of Regina: News Release"
 			
-			#real titles start in Oct. 1985	
-
+			
 			if real_date:
 				if real_date <= datetime(year = 1968, month = 1, day = 31):
 					label = "News from the University of Saskatchewan"
@@ -121,8 +130,9 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 				else:
 					author = "University of Regina Communications Office"
 
+			#get title (if available)
+			#real titles start in Oct. 1985	
 			title = None
-
 			if year:
 				if year > 1985:
 					title_block = re.search(r'(\d{4}.?\n+)([^a-z]+)(\n+)',text)
@@ -139,15 +149,21 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 								title = re.sub(r' +',' ',extract)
 								title = titlecase(title)
 
-			old_base = os.path.splitext(filename)[0]
-			base = re.sub('Release_','',old_base)
-			base = re.sub('_RE-DO','-1',base) 
-			uid = base + uid_part
-			
+			#create text field for metadata
+			full_text = re.sub(r'\n+',' ',clean_text)
+			full_text = re.sub(r' +',' ',full_text)
+
+			print(full_text)				
+
+			# old_base = os.path.splitext(filename)[0]
+			# base = re.sub('Release_','',old_base)
+			# base = re.sub('_RE-DO','-1',base) 
+			# uid = base + uid_part
 			#rename file
-			old_name = r'data/cleaned/' + old_base + '.txt'
-			new_name = r'data/cleaned/' + uid + '.txt'
+			#old_name = r'data/cleaned/' + old_base + '.txt'
+			#new_name = r'data/cleaned/' + uid + '.txt'
 			#os.rename(old_name,new_name)
-			row = [uid,new_name,accession_id,date,year,month,day,decade,label,title,author]
+			
+			row = [base_file,accession_id,date,year,month,day,decade,label,title,author,full_text]
 			writer.writerow(row)
 csvFile.close()		
