@@ -3,23 +3,24 @@ import csv
 from datetime import datetime
 import calendar
 from titlecase import titlecase
+import shutil
 
-#directory = r'data/1962-1967_2019-22_Box_36_File_268-274/'
-#accession_id = '2019-22 Box 36 File 268-274'
-#uid_part = '-2019-22-36'
+directory = r'data/1962-1967_2019-22_Box_36_File_268-274/'
+accession_id = '2019-22 Box 36 File 268-274'
+#uid_part = '_2019_22_36'
 
 #directory = r'data/1974-2002_2012-42_Box_1-3_File_1-27/'
 #accession_id = '2012-42 Box 1-3 File 1-27'
 # uid_part = '-2012-42-1'
 
-directory = r'data/1968-1974_2019-3_Box_56-57_File_570-578/'
-accession_id = '2019-3 Box 56-57 File 570-578'
+#directory = r'data/1968-1974_2019-3_Box_56-57_File_570-578/'
+#accession_id = '2019-3 Box 56-57 File 570-578'
 # uid_part = '-2019-3-570'
 
 with open('news_release_metadata.csv', 'a') as csvFile:
 	writer = csv.writer(csvFile)
-	header = ['pid','accession_id','date','year','month','day','decade','label','title','author','fulltext']
-	#writer.writerow(header)
+	header = ['pid','accession_id','_date','year','month','day','decade','label','title','author','full_text']
+	writer.writerow(header)
 	for filename in os.listdir(directory):
 		if filename.endswith(".pdf"):
 
@@ -151,19 +152,16 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 
 			#create text field for metadata
 			full_text = re.sub(r'\n+',' ',clean_text)
-			full_text = re.sub(r' +',' ',full_text)
+			full_text = re.sub(r' +',' ',full_text)				
 
-			print(full_text)				
-
-			# old_base = os.path.splitext(filename)[0]
-			# base = re.sub('Release_','',old_base)
-			# base = re.sub('_RE-DO','-1',base) 
-			# uid = base + uid_part
-			#rename file
-			#old_name = r'data/cleaned/' + old_base + '.txt'
-			#new_name = r'data/cleaned/' + uid + '.txt'
-			#os.rename(old_name,new_name)
+			base = re.sub('Release_','',base_file)
+			base = re.sub('_RE-DO','-1',base)
+			base = re.sub('-','_',base)
+			#copy file
+			old_name = directory + filename
+			new_name = r'data/final/' + base + '.pdf'
+			shutil.copy(old_name, new_name)
 			
-			row = [base_file,accession_id,date,year,month,day,decade,label,title,author,full_text]
+			row = [base,accession_id,date,year,month,day,decade,label,title,author,full_text]
 			writer.writerow(row)
 csvFile.close()		
