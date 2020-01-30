@@ -1,11 +1,7 @@
 import os, subprocess
 
-#sub_dir = r'1962-1967_2019-22_Box_36_File_268-274/'
-#sub_dir = r'1968-1974_2019-3_Box_56-57_File_570-578/'
-sub_dir = r'1974-2002_2012-42_Box_1-3_File_1-27/'
-
-
 base_dir = r'data/'
+sub_dir = r'scans/'
 
 directory = base_dir + sub_dir
 

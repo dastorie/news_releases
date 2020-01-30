@@ -4,22 +4,12 @@ from datetime import datetime
 import calendar
 from titlecase import titlecase
 
-#directory = r'data/1962-1967_2019-22_Box_36_File_268-274/'
-#accession_id = '2019-22 Box 36 File 268-274'
-#uid_part = '-2019-22-36'
-
-#directory = r'data/1974-2002_2012-42_Box_1-3_File_1-27/'
-#accession_id = '2012-42 Box 1-3 File 1-27'
-# uid_part = '-2012-42-1'
-
-directory = r'data/1968-1974_2019-3_Box_56-57_File_570-578/'
-accession_id = '2019-3 Box 56-57 File 570-578'
-# uid_part = '-2019-3-570'
+directory = r'data/scans/'
 
 with open('news_release_metadata.csv', 'a') as csvFile:
 	writer = csv.writer(csvFile)
-	header = ['pid','accession_id','date','year','month','day','decade','label','title','author','fulltext']
-	#writer.writerow(header)
+	header = ['file','dc.date.issued','dc.title','dc.author','note']
+	writer.writerow(header)
 	for filename in os.listdir(directory):
 		if filename.endswith(".pdf"):
 
@@ -38,6 +28,15 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 			clean_filepath = os.path.join(clean_text_path + clean_text_file)
 			clean_file = open(clean_filepath)
 			clean_text = clean_file.read()
+
+			#get archives ID 
+			a = re.search(r"[a-zA-Z0-9-]+$",base_file)
+			if a:
+				arc_id = a[0]
+			else:
+				arc_id = ''
+
+			arc_note = 'University of Regina Archives - Location: ' + arc_id
 
 			#get date
 			d = re.search(r"(\d{4}-\d{2}-\d{2})",filename)
@@ -109,10 +108,10 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 				#  > 1989-05-28 "University of Regina Communications Office"		
 
 			if real_date:
-				if real_date <= datetime(year = 1962, month = 7, day = 1):
+				if real_date <= datetime(year = 1960, month = 7, day = 1):
 					author = "News Services Office"
 				elif real_date <= datetime(year = 1968, month = 1, day = 31):
-					author = "University News Service"
+					author = "University News Services"
 				elif real_date <= datetime(year = 1972, month = 9, day = 30):
 					author = "Publicity and Public Relations Office"
 				elif real_date <= datetime(year = 1973, month = 2, day = 2):
@@ -149,11 +148,17 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 								title = re.sub(r' +',' ',extract)
 								title = titlecase(title)
 
+			if title:
+				full_title = label + ': ' + title
+			else:
+				full_title = label
+
+			print(full_title)
 			#create text field for metadata
 			full_text = re.sub(r'\n+',' ',clean_text)
 			full_text = re.sub(r' +',' ',full_text)
 
-			print(full_text)				
+			#print(full_text)				
 
 			# old_base = os.path.splitext(filename)[0]
 			# base = re.sub('Release_','',old_base)
@@ -164,6 +169,6 @@ with open('news_release_metadata.csv', 'a') as csvFile:
 			#new_name = r'data/cleaned/' + uid + '.txt'
 			#os.rename(old_name,new_name)
 			
-			row = [base_file,accession_id,date,year,month,day,decade,label,title,author,full_text]
+			row = [filename,date,full_title,author,arc_note]
 			writer.writerow(row)
 csvFile.close()		

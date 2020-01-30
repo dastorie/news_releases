@@ -1,9 +1,5 @@
 import os,re
 
-#directory = r'/home/dale/Documents/Code/news_releases/data/1962-1967_2019-22_Box_36_File_268-274/'
-#directory = r'/home/dale/Documents/Code/news_releases/data/1974-2002_2012-42_Box_1-3_File_1-27/'
-#directory = r'/home/dale/Documents/Code/news_releases/data/1968-1974_2019-3_Box_56-57_File_570-578/'
-
 base_dir = r'data/'
 
 input_dir = base_dir + 'txt/'
