@@ -3,12 +3,14 @@ import csv
 from datetime import datetime
 import calendar
 from titlecase import titlecase
+import shutil
 
 directory = r'data/scans/'
 
 with open('news_release_metadata.csv', 'a') as csvFile:
 	writer = csv.writer(csvFile)
 	header = ['file','dc.date.issued','dc.title','dc.author','note']
+
 	writer.writerow(header)
 	for filename in os.listdir(directory):
 		if filename.endswith(".pdf"):
